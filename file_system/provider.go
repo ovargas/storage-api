@@ -2,6 +2,7 @@ package file_system
 
 import (
 	"context"
+	"fmt"
 	"github.com/ovargas/storage-api/storage"
 	"github.com/ovargas/storage-api/storage/driver"
 	"io/ioutil"
@@ -31,10 +32,12 @@ type provider struct {
 
 func (p *provider) Store(ctx context.Context, filename string, content []byte) (string, error) {
 
-	path := filepath.Base(filename)
+	fullPath := fmt.Sprintf("%s/%s", p.folder, filename)
+
+	path:= filepath.Dir(fullPath)
 	_ = os.MkdirAll(path, os.ModePerm)
 
-	file, err := os.Create(filename)
+	file, err := os.Create(fullPath)
 
 	defer func() {
 		_ = file.Close()
